@@ -1,4 +1,4 @@
-#include "http_tcpServer_linux.h"
+#include <http_tcpServer_linux.h>
 
 #include <iostream>
 #include <sstream>
@@ -175,10 +175,7 @@ namespace http
     )";
 
         std::ostringstream ss;
-        ss << "HTTP/1.1 200 OK\r\n"
-           << "Content-Type: text/html\r\n"
-           << "Content-Length: " << htmlFile.size() << "\r\n"
-           << "\r\n"
+        ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
            << htmlFile;
 
         return ss.str();
