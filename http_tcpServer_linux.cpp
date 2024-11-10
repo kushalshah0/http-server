@@ -124,7 +124,7 @@ namespace http
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>403 Forbidden</title>
+        <title>HTTP Server</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
         <style>
             body {
@@ -166,10 +166,9 @@ namespace http
     </head>
     <body>
         <div class="container">
-            <code><h3>/</h3></code>
-            <h1>403</h1>
-            <h2>Forbidden</h2>
-            <p>Sorry, you do not have permission to access this page.</p>
+            <h1>HTTP Server Using C++</h1>
+            <h2>Hello :)</h2>
+            <p>I am being served by the awesome HTTP server.</p>
         </div>
     </body>
     </html>
