@@ -1,0 +1,203 @@
+[TU LOGO]
+TRIBHUVAN UNIVERSITY (12, Bold, Center Justified)
+INSTITUTE OF ENGINEERING
+THAPATHALI CAMPUS
+A Project Report (12, Bold, Center Justified)
+On
+Building HTTP Server in C++
+Submitted By: (12, Bold, Center Justified)
+Amrit Sapkota (THA079BCT003) (12, Center Justified)
+Deep Dhamala (THA079BCT010)
+Gyanendra Silwal (THA079BCT012)
+Kushal Shah (THA079BCT021)
+Submitted To: (12, Bold, Center Justified)
+Department of Electronics and Computer Engineering
+Thapathali Campus (12, Center Justified)
+Kathmandu, Nepal
+November, 2016 (12, Center Justified)
+
+
+
+COPYRIGHT
+The author has agreed that the Library, Department of Electronics and Computer
+Engineering, Thapathali Campus, Institute of Engineering may make this report freely
+available for inspection. Moreover, the author has agreed that permission for extensive
+copying of this project report for scholarly purpose may be granted by the supervisors
+who supervised the project work recorded herein or, in their absence, by the Head of
+the Department wherein the project report was done. It is understood that the
+recognition will be given to the author of this report and to the Department of
+Electronics and Computer Engineering, Thapathali Campus, Institute of Engineering in
+any use of the material of this project report. Copying or publication or the other use of
+this report for financial gain without approval of to the Department of Electronics and
+Computer Engineering, Thapathali Campus, Institute of Engineering and author’s
+written permission is prohibited.
+Request for permission to copy or to make any other use of the material in this report
+in whole or in part should be addressed to:
+Head
+Department of Electronics and Computer Engineering
+Thapathali Campus, Institute of Engineering
+Lalitpur, Kathmandu
+Nepal
+
+
+
+ACKNOWLEDGEMENT
+We would like to express our sincere gratitude to our project supervisor, [Supervisor's Name], for their invaluable guidance and support throughout the course of this project. Their expertise and insights were instrumental in shaping our understanding of network programming and web server architecture. We also extend our thanks to our peers and faculty members in the Department of Electronics and Computer Engineering for their encouragement and assistance. Finally, we appreciate our families for their unwavering support and motivation during this endeavor.
+
+Amrit Sapkota (THA079BCT003)
+Deep Dhamala (THA079BCT010)
+Gyanendra Silwal (THA079BCT012)
+Kushal Shah (THA079BCT021)
+
+
+ABSTRACT
+This project focuses on the development of a basic HTTP server using C++. The server is designed to handle HTTP requests and responses, supporting essential methods such as GET and POST. The implementation utilizes multithreading to manage multiple client connections efficiently. This project not only enhances our understanding of the HTTP protocol but also provides practical experience in network programming and server design. The server is capable of serving static files and can be extended for dynamic content in future iterations.
+
+Keywords: C++, HTTP, Server, Multithreading, Network Programming
+
+
+
+Table of Contents
+COPYRIGHT i
+ACKNOWLEDGEMENT ii
+ABSTRACT iii
+List of Figures iv
+List of Tables v
+List of Abbreviations vi
+INTRODUCTION 1
+1.1 Background Introduction 1
+1.2 Motivation 1
+1.3 Objectives 1
+1.4 Scope 1
+LITERATURE REVIEW 2
+2.1 Existing Web Server Technologies 2
+2.2 Security in Web Servers 2
+2.3 Performance Optimization Techniques 3
+METHODOLOGY 4
+3.1 System Design 4
+3.2 Implementation Steps 4
+SYSTEM DESCRIPTION 5
+4.1 Server Architecture 5
+4.2 Code Implementation 5
+RESULTS AND ANALYSIS 6
+5.1 Performance Metrics 6
+5.2 Comparison with Existing Solutions 6
+CONCLUSION AND FUTURE ENHANCEMENT 7
+6.1 Conclusion 7
+6.2 Limitations 7
+6.3 Future Enhancement 7
+APPENDICES 8
+REFERENCES 9
+
+
+
+List of Figures
+Figure 1: Block Diagram of HTTP Server Architecture
+Figure 2: Flowchart of Request Handling
+Figure 3: Performance Comparison Graph
+
+
+
+List of Tables
+Table 1: Performance Metrics Summary
+Table 2: Comparison of HTTP Methods
+
+
+
+List of Abbreviations
+HTTP: Hypertext Transfer Protocol
+C++: A general-purpose programming language
+API: Application Programming Interface
+
+
+
+1. INTRODUCTION
+The internet has become an integral part of modern life, and web servers play a crucial role in facilitating communication between clients and servers. This project aims to develop a basic HTTP server using C++, which will serve as a foundation for understanding web technologies and protocols. The server will be capable of handling multiple client requests simultaneously, providing a practical implementation of the HTTP protocol.
+
+1.1 Background Introduction
+Web servers are essential components of the internet, responsible for hosting websites and serving content to users. They operate on the client-server model, where clients send requests to the server, and the server responds with the requested resources. Understanding the underlying mechanisms of web servers is vital for anyone interested in web development and network programming.
+
+1.2 Motivation
+The motivation behind this project stems from the desire to gain hands-on experience in network programming and to understand the intricacies of the HTTP protocol. By building a simple HTTP server, we aim to explore the challenges and solutions involved in server-client communication, as well as the performance considerations that come into play.
+
+1.3 Objectives
+The main objectives of our project are listed below:
+To develop a basic HTTP server capable of handling GET and POST requests.
+To implement multithreading to manage multiple client connections efficiently.
+
+1.4 Scope
+This project focuses on the development of a basic HTTP server in C++. The server will support static file serving and basic request handling. Future enhancements may include support for dynamic content generation and improved security features.
+
+
+
+3. METHODOLOGY
+The methodology outlines the steps taken to design and implement the HTTP server. It includes system design, coding practices, and testing procedures.
+
+3.1 System Design
+The server architecture is designed to handle multiple client requests using a multithreaded approach. Each client connection is managed in a separate thread, allowing for concurrent processing.
+
+3.2 Implementation Steps
+The implementation involves setting up socket programming in C++, handling HTTP requests, and serving static files. Detailed algorithms and code snippets will be provided to illustrate the process.
+
+
+
+4. SYSTEM DESCRIPTION
+This section describes the implementation details of the HTTP server, including the programming languages and tools used.
+
+4.1 Server Architecture
+The server is built using C++ and utilizes the POSIX socket API for network communication. The architecture is designed to be modular, allowing for easy updates and enhancements.
+
+4.2 Code Implementation
+The code implementation section will provide key snippets of the server code, explaining the functionality of each component and how they interact to serve client requests.
+
+
+
+5. RESULTS AND ANALYSIS
+This section presents the results of the project, including performance metrics and comparisons with existing solutions.
+
+5.1 Performance Metrics
+The server's performance will be evaluated based on response time, throughput, and resource utilization. Results will be presented in tabular form for clarity.
+
+5.2 Comparison with Existing Solutions
+A comparison of the developed server with established web servers will be conducted to highlight strengths and areas for improvement.
+
+
+
+6. CONCLUSION AND FUTURE ENHANCEMENT
+6.1 Conclusion
+The project successfully developed a basic HTTP server in C++. The server demonstrated the ability to handle multiple client requests and served static files efficiently.
+
+6.2 Limitations
+The current implementation has limitations, including a lack of support for dynamic content and advanced security features. These aspects can be addressed in future iterations.
+
+6.3 Future Enhancement
+Future enhancements may include:
+Implementing support for dynamic content generation.
+Adding security features such as HTTPS support and input validation.
+Improving performance through advanced caching mechanisms and load balancing techniques.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+REFERENCES
+1. RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1:
+https://datatracker.ietf.org/doc/html/rfc2616
+2. Boost.Asio Documentation:
+https://www.boost.org/doc/libs/1_84_0/doc/html/boost_asio.html
+3. C++ Standard Library Documentation: https://devdocs.io/cpp/,
+https://learn.microsoft.com/en-us/cpp/?view=msvc-170
+4. Stack Overflow: https://stackoverflow.com
+5. "Network Programming with C++: Creating Networked Applications" by Al
+Williams. [Book]
+6. Poco: C++ Libraries for Network-centric Applications" by Günter Obiltschnig.
+[Book]
