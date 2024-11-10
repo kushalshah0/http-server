@@ -1,4 +1,4 @@
-#include <http_tcpServer_linux.h>
+#include "http_tcpServer_linux.h"
 
 #include <iostream>
 #include <sstream>
@@ -118,9 +118,68 @@ namespace http
 
     std::string TcpServer::buildResponse()
     {
-        std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
+        std::string htmlFile = R"(
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>403 Forbidden</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'Roboto', sans-serif;
+                background-color: #121212;
+                color: #ffffff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                text-align: center;
+            }
+            .container {
+                padding: 30px;
+                border-radius: 8px;
+                max-width: 500px;
+                width: 100%;
+                margin: 0 auto;
+            }
+            h1 {
+                font-size: 72px;
+                margin: -10px;
+                color: #e74c3c;
+            }
+            h2 {
+                font-size: 24px;
+                margin: 20px 0;
+            }
+            h3 {
+                font-size: 15px;
+                margin: 20px 0;
+            }
+            p {
+                font-size: 16px;
+                line-height: 1.5;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <code><h3>/</h3></code>
+            <h1>403</h1>
+            <h2>Forbidden</h2>
+            <p>Sorry, you do not have permission to access this page.</p>
+        </div>
+    </body>
+    </html>
+    )";
+
         std::ostringstream ss;
-        ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
+        ss << "HTTP/1.1 200 OK\r\n"
+           << "Content-Type: text/html\r\n"
+           << "Content-Length: " << htmlFile.size() << "\r\n"
+           << "\r\n"
            << htmlFile;
 
         return ss.str();
