@@ -7,4 +7,4 @@ services:
       - .:/http-server
     ports:
       - "8080:8080"
-    command: "./build/HttpLinux"
+    command: "./build/server"
