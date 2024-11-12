@@ -40,7 +40,6 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#building-and-running">Building and Running</a></li>
-        <li><a href="#windows-version">Windows Version</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -96,11 +95,13 @@ With docker fully setup on your system:
 
 1. navigate to your desired project directory
 2. Clone the repo
+
    ```sh
-   git clone https://github.com/OsasAzamegbe/http-server.git
+   git clone https://github.com/kushalshah0/http-server.git
    ```
    (if you do not have git installed, take a brief detour and follow these [instructions](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)).
 3. navigate to the project folder *__http-server/__* and build the docker image
+
    ```sh
    docker-compose build
    ```
@@ -112,7 +113,9 @@ With docker fully setup on your system:
 When you're done with the server and need it shut down:
 
 1. open up a second terminal window and navigate to the project folder
+
 2. bring down the docker container
+
    ```sh
    docker-compose down
    ```  
@@ -125,8 +128,6 @@ When you're done with the server and need it shut down:
 ## Usage
 
 Once your server is up and running with `docker-compose up`, you can pop into any web browser and navigate to `localhost:8080/` to see the default HTTP response sent from the server. There will be an article coming soon where I'll talk more indept about the development of this HTTP server.
-
-_For more details, please refer to the **<a href="#roadmap">Roadmap</a>** or the article (link coming soon)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
