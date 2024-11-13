@@ -80,7 +80,7 @@ namespace http
         }
 
         std::ostringstream ss;
-        ss << "\n*** Listening on ADDRESS: " << inet_ntoa(m_socketAddress.sin_addr) << " PORT: " << ntohs(m_socketAddress.sin_port) << " ***\n\n";
+        ss << "\n*** Server is running on ADDRESS: " << inet_ntoa(m_socketAddress.sin_addr) << " PORT: " << ntohs(m_socketAddress.sin_port) << " ***\n\n";
         log(ss.str());
 
         int bytesReceived;
