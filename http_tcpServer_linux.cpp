@@ -94,12 +94,15 @@ namespace http
             bytesReceived = read(m_new_socket, buffer, BUFFER_SIZE);
             if (bytesReceived < 0)
             {
-                exitWithError("Failed to read bytes from client socket connection");
+                log("Failed to read bytes from client socket connection");
+                close(m_new_socket);
+                continue; // Continue to listen for new connections
             }
 
             std::ostringstream ss;
             ss << "------ Received Request from client ------\n\n";
             log(ss.str());
+            log(std::string(buffer, bytesReceived));
 
             sendResponse();
 
@@ -145,6 +148,7 @@ namespace http
         if (bytesSent == m_serverMessage.size())
         {
             log("------ Server Response sent to client ------\n\n");
+            log(m_serverMessage);
         }
         else
         {
