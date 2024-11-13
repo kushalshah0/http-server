@@ -131,8 +131,7 @@ namespace http
         std::string htmlFile = htmlStream.str(); // Convert stream to string
 
         std::ostringstream ss;
-        ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
-           << htmlFile;
+           ss << "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " << htmlFile.size() << "\r\n\r\n" << htmlFile;
 
         return ss.str();
     }
