@@ -103,7 +103,7 @@ With docker fully setup on your system:
 3. navigate to the project folder *__http-server/__* and build the docker image
 
    ```sh
-   docker-compose build
+   sudo docker-compose build
    ```
 4. start the server
    ```sh
