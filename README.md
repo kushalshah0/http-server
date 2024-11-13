@@ -117,7 +117,7 @@ When you're done with the server and need it shut down:
 2. bring down the docker container
 
    ```sh
-   docker-compose down
+   sudo docker-compose down
    ```  
  **NOTE:** if you make any changes to the code, you will have to re-compile as well by simply running **step 3** again.
  </br></br>
