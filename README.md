@@ -107,7 +107,7 @@ With docker fully setup on your system:
    ```
 4. start the server
    ```sh
-   docker-compose up
+   sudo docker-compose up
    ```
 
 When you're done with the server and need it shut down:
