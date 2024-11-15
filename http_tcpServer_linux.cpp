@@ -3,8 +3,8 @@
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
-
 #include <fstream>
+#include <cstring> // For std::strlen
 
 namespace
 {
@@ -27,8 +27,7 @@ namespace http
 
     TcpServer::TcpServer(std::string ip_address, int port) : m_ip_address(ip_address), m_port(port), m_socket(), m_new_socket(),
                                                              m_incomingMessage(),
-                                                             m_socketAddress(), m_socketAddress_len(sizeof(m_socketAddress)),
-                                                             m_serverMessage(buildResponse())
+                                                             m_socketAddress(), m_socketAddress_len(sizeof(m_socketAddress))
     {
         m_socketAddress.sin_family = AF_INET;
         m_socketAddress.sin_port = htons(m_port);
@@ -80,14 +79,14 @@ namespace http
         }
 
         std::ostringstream ss;
-        ss << "\n*** Server is running on ADDRESS: " << inet_ntoa(m_socketAddress.sin_addr) << " PORT: " << ntohs(m_socketAddress.sin_port) << " ***\n\n";
+        ss << "\n*** Server is running on ADDRESS: " << inet_ntoa(m_socketAddress.sin_addr) << " PORT: " << ntohs(m_socketAddress.sin_port) << " ***";
         log(ss.str());
 
         int bytesReceived;
 
         while (true)
         {
-            log("====== Waiting for a new connection ======\n\n\n");
+            log("\n\n====== Waiting for a new connection ======\n\n");
             acceptConnection(m_new_socket);
 
             char buffer[BUFFER_SIZE] = {0};
@@ -104,7 +103,9 @@ namespace http
             log(ss.str());
             log(std::string(buffer, bytesReceived));
 
-            sendResponse();
+            // Call buildResponse to handle the request and send the appropriate response
+            std::string response = buildResponse(buffer);
+            sendResponse(response);
 
             close(m_new_socket);
         }
@@ -121,39 +122,88 @@ namespace http
         }
     }
 
-    std::string TcpServer::buildResponse()
+    std::string TcpServer::buildResponse(const char *request)
     {
-        std::ifstream file("assets/index.html"); // Open the HTML file
-        if (!file.is_open())
+        std::string req(request);
+        std::string method = req.substr(0, req.find(' '));
+
+        std::string path = req.substr(req.find(' ') + 1, req.find(' ', req.find(' ') + 1) - req.find(' ') - 1);
+
+        // Remove leading '/'
+        if (!path.empty() && path[0] == '/')
         {
-            exitWithError("Could not open index.html");
+            path = path.substr(1);
         }
 
-        std::ostringstream htmlStream;
-        htmlStream << file.rdbuf();              // Read the file content into the stream
-        std::string htmlFile = htmlStream.str(); // Convert stream to string
+        // std::string path = req.substr(req.find(' '), req.find(' ', req.find(' ') + 1) - req.find(' '));
+        // path = path.substr(1); // Remove leading '/'
 
-        std::ostringstream ss;
-           ss << "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " << htmlFile.size() << "\r\n\r\n" << htmlFile;
+        std::ostringstream response;
 
-        return ss.str();
+        if (method == "GET")
+        {
+            std::string filePath;
+            std::string contentType;
+
+            if (path.empty() || path == "index.html")
+            {
+                filePath = "assets/index.html";
+                contentType = "text/html";
+            }
+            else if (path == "styles.css")
+            {
+                filePath = "assets/styles.css";
+                contentType = "text/css";
+            }
+            else
+            {
+                response << "HTTP/1.1 404 Not Found\r\n"
+                         << "Content-Type: text/html\r\n"
+                         << "Content-Length: 60\r\n\r\n"
+                         << "<html><body><h1>404 Not Found</h1></body></html>";
+                return response.str();
+            }
+
+            std::ifstream file(filePath);
+            if (file)
+            {
+                std::string fileContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+                response << "HTTP/1.1 200 OK\r\n"
+                         << "Content-Type: " << contentType << "\r\n"
+                         << "Content-Length: " << fileContent.size() << "\r\n\r\n"
+                         << fileContent;
+            }
+            else
+            {
+                response << "HTTP/1.1 404 Not Found\r\n"
+                         << "Content-Type: text/html\r\n"
+                         << "Content-Length: 60\r\n\r\n"
+                         << "<html><body><h1>404 Not Found</h1></body></html>";
+            }
+        }
+        else
+        {
+            response << "HTTP/1.1 405 Method Not Allowed\r\n"
+                     << "Content-Type: text/html\r\n"
+                     << "Content-Length: 60\r\n\r\n"
+                     << "<html><body><h1>405 Method Not Allowed</h1></body></html>";
+        }
+
+        return response.str();
     }
 
-    void TcpServer::sendResponse()
+    void TcpServer::sendResponse(const std::string &responseMessage)
     {
-        long bytesSent;
+        long bytesSent = write(m_new_socket, responseMessage.c_str(), responseMessage.size());
 
-        bytesSent = write(m_new_socket, m_serverMessage.c_str(), m_serverMessage.size());
-
-        if (bytesSent == m_serverMessage.size())
+        if (bytesSent == responseMessage.size())
         {
             log("------ Server Response sent to client ------\n\n");
-            log(m_serverMessage);
+            log(responseMessage);
         }
         else
         {
             log("Error sending response to client");
         }
     }
-
-} // namespace http
+} //
