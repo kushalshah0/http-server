@@ -122,26 +122,41 @@ namespace http
         }
     }
 
-    std::string TcpServer::buildResponse(const char* request)
+    std::string TcpServer::buildResponse(const char *request)
     {
         std::string req(request);
         std::string method = req.substr(0, req.find(' '));
-        std::string path = req.substr(req.find(' '), req.find(' ', req.find(' ') + 1) - req.find(' '));
-        path = path.substr(1); // Remove leading '/'
+
+        std::string path = req.substr(req.find(' ') + 1, req.find(' ', req.find(' ') + 1) - req.find(' ') - 1);
+
+        // Remove leading '/'
+        if (!path.empty() && path[0] == '/')
+        {
+            path = path.substr(1);
+        }
+
+        // std::string path = req.substr(req.find(' '), req.find(' ', req.find(' ') + 1) - req.find(' '));
+        // path = path.substr(1); // Remove leading '/'
 
         std::ostringstream response;
 
-        if (method == "GET") {
+        if (method == "GET")
+        {
             std::string filePath;
             std::string contentType;
 
-            if (path.empty() || path == "index.html") {
+            if (path.empty() || path == "index.html")
+            {
                 filePath = "assets/index.html";
                 contentType = "text/html";
-            } else if (path == "styles.css") {
+            }
+            else if (path == "styles.css")
+            {
                 filePath = "assets/styles.css";
                 contentType = "text/css";
-            } else {
+            }
+            else
+            {
                 response << "HTTP/1.1 404 Not Found\r\n"
                          << "Content-Type: text/html\r\n"
                          << "Content-Length: 60\r\n\r\n"
@@ -150,19 +165,24 @@ namespace http
             }
 
             std::ifstream file(filePath);
-            if (file) {
+            if (file)
+            {
                 std::string fileContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
                 response << "HTTP/1.1 200 OK\r\n"
                          << "Content-Type: " << contentType << "\r\n"
                          << "Content-Length: " << fileContent.size() << "\r\n\r\n"
                          << fileContent;
-            } else {
+            }
+            else
+            {
                 response << "HTTP/1.1 404 Not Found\r\n"
                          << "Content-Type: text/html\r\n"
                          << "Content-Length: 60\r\n\r\n"
                          << "<html><body><h1>404 Not Found</h1></body></html>";
             }
-        } else {
+        }
+        else
+        {
             response << "HTTP/1.1 405 Method Not Allowed\r\n"
                      << "Content-Type: text/html\r\n"
                      << "Content-Length: 60\r\n\r\n"
