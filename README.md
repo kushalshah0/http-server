@@ -72,7 +72,6 @@ Of course, there are many many many ways in which this code can be improved and/
 
 * [C++](http://www.cplusplus.org/)
 * [Docker](https://www.docker.com/)
-* [Cmake](https://cmake.org/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
