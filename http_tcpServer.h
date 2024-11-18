@@ -1,5 +1,5 @@
-#ifndef INCLUDED_HTTP_TCPSERVER_LINUX
-#define INCLUDED_HTTP_TCPSERVER_LINUX
+#ifndef INCLUDED_HTTP_TCPSERVER
+#define INCLUDED_HTTP_TCPSERVER
 
 #include <stdio.h>
 #include <sys/socket.h>
