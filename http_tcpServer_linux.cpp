@@ -164,7 +164,6 @@ namespace http
                 return response.str();
             }
 
-            // std::ifstream file(filePath);
             std::ifstream file(filePath.c_str());
             if (file)
             {
