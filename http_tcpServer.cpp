@@ -147,10 +147,15 @@ namespace http
                 filePath = "assets/index.html";
                 contentType = "text/html";
             }
-            else if (path == "styles.css")
+            else if (path == "style.css")
             {
-                filePath = "assets/styles.css";
+                filePath = "assets/style.css";
                 contentType = "text/css";
+            }
+            else if (path == "script.js")
+            {
+                filePath = "assets/script.js";
+                contentType = "application/javascript";
             }
             else if (path == "favicon.png")
             {
