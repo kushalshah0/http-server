@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <cstring> // For std::strlen
+#include <unordered_map>
 
 namespace
 {
@@ -139,46 +140,47 @@ namespace http
 
         if (method == "GET")
         {
-            std::string filePath;
-            std::string contentType;
+            // Create an unordered_map to map paths to file paths and content types
+            std::unordered_map<std::string, std::pair<std::string, std::string>> fileMap = {
+                {"", {"assets/index.html", "text/html"}},
+                {"index.html", {"assets/index.html", "text/html"}},
+                {"style.css", {"assets/style.css", "text/css"}},
+                {"script.js", {"assets/script.js", "application/javascript"}},
+                {"favicon.png", {"assets/favicon.png", "image/x-icon"}},
+                {"assets/slides/0.jpeg", {"assets/slides/0.jpeg", "image/jpeg"}},
+                {"assets/slides/1.jpeg", {"assets/slides/1.jpeg", "image/jpeg"}},
+                {"assets/slides/2.jpeg", {"assets/slides/2.jpeg", "image/jpeg"}},
+                {"assets/slides/3.jpeg", {"assets/slides/3.jpeg", "image/jpeg"}},
+                {"assets/slides/4.jpeg", {"assets/slides/4.jpeg", "image/jpeg"}},
+                {"assets/slides/5.jpeg", {"assets/slides/5.jpeg", "image/jpeg"}},
+                {"assets/slides/6.jpeg", {"assets/slides/6.jpeg", "image/jpeg"}},
+                {"assets/slides/7.jpeg", {"assets/slides/7.jpeg", "image/jpeg"}},
+                {"assets/slides/8.jpeg", {"assets/slides/8.jpeg", "image/jpeg"}},
+                {"assets/slides/9.jpeg", {"assets/slides/9.jpeg", "image/jpeg"}},
+                {"assets/slides/10.jpeg", {"assets/slides/10.jpeg", "image/jpeg"}}};
 
-            if (path.empty() || path == "index.html")
+            auto it = fileMap.find(path);
+            if (it != fileMap.end())
             {
-                filePath = "assets/index.html";
-                contentType = "text/html";
-            }
-            else if (path == "style.css")
-            {
-                filePath = "assets/style.css";
-                contentType = "text/css";
-            }
-            else if (path == "script.js")
-            {
-                filePath = "assets/script.js";
-                contentType = "application/javascript";
-            }
-            else if (path == "favicon.png")
-            {
-                filePath = "assets/favicon.png";
-                contentType = "image/x-icon";
-            }
-            else
-            {
-                response << "HTTP/1.1 404 Not Found\r\n"
-                         << "Content-Type: text/html\r\n"
-                         << "Content-Length: 60\r\n\r\n"
-                         << "<html><body><h1>404 Not Found</h1></body></html>";
-                return response.str();
-            }
+                const std::string &filePath = it->second.first;
+                const std::string &contentType = it->second.second;
 
-            std::ifstream file(filePath.c_str());
-            if (file)
-            {
-                std::string fileContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-                response << "HTTP/1.1 200 OK\r\n"
-                         << "Content-Type: " << contentType << "\r\n"
-                         << "Content-Length: " << fileContent.size() << "\r\n\r\n"
-                         << fileContent;
+                std::ifstream file(filePath.c_str());
+                if (file)
+                {
+                    std::string fileContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+                    response << "HTTP/1.1 200 OK\r\n"
+                             << "Content-Type: " << contentType << "\r\n"
+                             << "Content-Length: " << fileContent.size() << "\r\n\r\n"
+                             << fileContent;
+                }
+                else
+                {
+                    response << "HTTP/1.1 404 Not Found\r\n"
+                             << "Content-Type: text/html\r\n"
+                             << "Content-Length: 60\r\n\r\n"
+                             << "<html><body><h1>404 Not Found</h1></body></html>";
+                }
             }
             else
             {
