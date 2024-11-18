@@ -135,9 +135,6 @@ namespace http
             path = path.substr(1);
         }
 
-        // std::string path = req.substr(req.find(' '), req.find(' ', req.find(' ') + 1) - req.find(' '));
-        // path = path.substr(1); // Remove leading '/'
-
         std::ostringstream response;
 
         if (method == "GET")
