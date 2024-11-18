@@ -152,6 +152,11 @@ namespace http
                 filePath = "assets/styles.css";
                 contentType = "text/css";
             }
+            else if (path == "favicon.png")
+            {
+                filePath = "assets/favicon.png";
+                contentType = "image/x-icon";
+            }
             else
             {
                 response << "HTTP/1.1 404 Not Found\r\n"
