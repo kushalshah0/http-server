@@ -15,19 +15,22 @@ namespace
     std::string currentDateTime()
     {
         std::time_t now = std::time(0);
-        std::tm* tm_now = std::localtime(&now);
+        std::tm *tm_now = std::localtime(&now);
 
         std::ostringstream oss;
-        oss << std::put_time(tm_now, "%Y-%m-%d %H:%M:%S");  // Format: YYYY-MM-DD HH:MM:SS
+        oss << std::put_time(tm_now, "%Y-%m-%d %H:%M:%S"); // Format: YYYY-MM-DD HH:MM:SS
         return oss.str();
     }
 
     void log(const std::string &message, const std::string &ip = "")
     {
-       std::string timestamp = currentDateTime();
-        if (!ip.empty()) {
+        std::string timestamp = currentDateTime();
+        if (!ip.empty())
+        {
             std::cout << "[" << timestamp << "] [IP: " << ip << "] " << message << std::endl;
-        } else {
+        }
+        else
+        {
             std::cout << "[" << timestamp << "] " << message << std::endl;
         }
     }
@@ -118,8 +121,8 @@ namespace http
             std::ostringstream ss;
             std::string request(buffer, bytesReceived);
             size_t firstSpace = request.find(' ');
-size_t secondSpace = request.find(' ', firstSpace + 1);
-std::string methodAndPath = request.substr(0, secondSpace);
+            size_t secondSpace = request.find(' ', firstSpace + 1);
+            std::string methodAndPath = request.substr(0, secondSpace);
             log(methodAndPath, inet_ntoa(m_socketAddress.sin_addr));
             std::string response = buildResponse(buffer);
             sendResponse(response);
@@ -220,7 +223,7 @@ std::string methodAndPath = request.substr(0, secondSpace);
 
         if (bytesSent == responseMessage.size())
         {
-            log("Servered Successfully", inet_ntoa(m_socketAddress.sin_addr)); 
+            log("Servered Successfully", inet_ntoa(m_socketAddress.sin_addr));
         }
         else
         {
