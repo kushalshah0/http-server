@@ -30,8 +30,8 @@ namespace http
         int startServer();
         void closeServer();
         void acceptConnection(int &new_socket);
-        std::string buildResponse(const char* request);
-        void sendResponse(const std::string &responseMessage);
+        std::pair<std::string, int> buildResponse(const char* request);
+        void sendResponse(const std::string &responseMessage, int statusCode);
     };
 
 } // namespace http

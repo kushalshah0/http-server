@@ -4,8 +4,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <fstream>
-#include <cstring> // For std::strlen
-#include <unordered_map>
+#include <cstring>
 #include <ctime>
 #include <iomanip>
 #include <unordered_map>
@@ -20,7 +19,7 @@ namespace
         std::tm *tm_now = std::localtime(&now);
 
         std::ostringstream oss;
-        oss << std::put_time(tm_now, "%Y-%m-%d %H:%M:%S"); // Format: YYYY-MM-DD HH:MM:SS
+        oss << std::put_time(tm_now, "%Y-%m-%d %H:%M:%S");
         return oss.str();
     }
 
@@ -46,10 +45,7 @@ namespace
 
 namespace http
 {
-
-    TcpServer::TcpServer(std::string ip_address, int port) : m_ip_address(ip_address), m_port(port), m_socket(), m_new_socket(),
-                                                             m_incomingMessage(),
-                                                             m_socketAddress(), m_socketAddress_len(sizeof(m_socketAddress))
+    TcpServer::TcpServer(std::string ip_address, int port) : m_ip_address(ip_address), m_port(port)
     {
         m_socketAddress.sin_family = AF_INET;
         m_socketAddress.sin_port = htons(m_port);
@@ -57,9 +53,7 @@ namespace http
 
         if (startServer() != 0)
         {
-            std::ostringstream ss;
-            ss << "Failed to start server with PORT: " << ntohs(m_socketAddress.sin_port);
-            log(ss.str());
+            log("Failed to start server with PORT: " + std::to_string(ntohs(m_socketAddress.sin_port)));
         }
     }
 
@@ -77,7 +71,7 @@ namespace http
             return 1;
         }
 
-        if (bind(m_socket, (sockaddr *)&m_socketAddress, m_socketAddress_len) < 0)
+        if (bind(m_socket, (sockaddr *)&m_socketAddress, sizeof(m_socketAddress)) < 0)
         {
             exitWithError("Cannot connect socket to address");
             return 1;
@@ -89,7 +83,6 @@ namespace http
     void TcpServer::closeServer()
     {
         close(m_socket);
-        close(m_new_socket);
         exit(0);
     }
 
@@ -100,19 +93,13 @@ namespace http
             exitWithError("Socket listen failed");
         }
 
-        std::ostringstream ss;
-        ss << "Server Started on ADDRESS:  " << inet_ntoa(m_socketAddress.sin_addr) << ":" << ntohs(m_socketAddress.sin_port);
-        log(ss.str());
-
-        int bytesReceived;
+        log("Server Started on ADDRESS: " + std::string(inet_ntoa(m_socketAddress.sin_addr)) + ":" + std::to_string(ntohs(m_socketAddress.sin_port)));
 
         while (true)
         {
-            // log("\n\n====== Waiting for a new connection ======\n\n");
             acceptConnection(m_new_socket);
-
             char buffer[BUFFER_SIZE] = {0};
-            bytesReceived = read(m_new_socket, buffer, BUFFER_SIZE);
+            int bytesReceived = read(m_new_socket, buffer, BUFFER_SIZE);
             if (bytesReceived < 0)
             {
                 log("Failed to read bytes from client socket connection");
@@ -120,14 +107,15 @@ namespace http
                 continue;
             }
 
-            std::ostringstream ss;
             std::string request(buffer, bytesReceived);
             size_t firstSpace = request.find(' ');
             size_t secondSpace = request.find(' ', firstSpace + 1);
             std::string methodAndPath = request.substr(0, secondSpace);
             log(methodAndPath, inet_ntoa(m_socketAddress.sin_addr));
-            std::string response = buildResponse(buffer);
-            sendResponse(response);
+
+            // Get response and status code
+            auto responsePair = buildResponse(buffer);
+            sendResponse(responsePair.first, responsePair.second);
 
             close(m_new_socket);
         }
@@ -135,36 +123,29 @@ namespace http
 
     void TcpServer::acceptConnection(int &new_socket)
     {
-        new_socket = accept(m_socket, (sockaddr *)&m_socketAddress, &m_socketAddress_len);
+        new_socket = accept(m_socket, (sockaddr *)&m_socketAddress, (socklen_t *)&m_socketAddress_len);
         if (new_socket < 0)
         {
-            std::ostringstream ss;
-            ss << "Server failed to accept incoming connection from ADDRESS: " << inet_ntoa(m_socketAddress.sin_addr) << "; PORT: " << ntohs(m_socketAddress.sin_port);
-            exitWithError(ss.str());
-
-            std::string client_ip = inet_ntoa(m_socketAddress.sin_addr);
-            log("Accepted connection from client", client_ip);
+            exitWithError("Server failed to accept incoming connection");
         }
     }
 
-    std::string TcpServer::buildResponse(const char *request)
+    std::pair<std::string, int> TcpServer::buildResponse(const char *request)
     {
         std::string req(request);
         std::string method = req.substr(0, req.find(' '));
-
         std::string path = req.substr(req.find(' ') + 1, req.find(' ', req.find(' ') + 1) - req.find(' ') - 1);
-
-        // Remove leading '/'
+        
         if (!path.empty() && path[0] == '/')
         {
             path = path.substr(1);
         }
 
         std::ostringstream response;
+        int statusCode = 200; // Default to 200 OK
 
         if (method == "GET")
         {
-            // Create an unordered_map to map paths to file paths and content types
             std::unordered_map<std::string, std::pair<std::string, std::string>> fileMap = {
                 {"", {"assets/index.html", "text/html"}},
                 {"index.html", {"assets/index.html", "text/html"}},
@@ -189,7 +170,7 @@ namespace http
                 const std::string &filePath = it->second.first;
                 const std::string &contentType = it->second.second;
 
-                std::ifstream file(filePath.c_str());
+                std::ifstream file(filePath);
                 if (file)
                 {
                     std::string fileContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
@@ -200,6 +181,7 @@ namespace http
                 }
                 else
                 {
+                    statusCode = 404;
                     response << "HTTP/1.1 404 Not Found\r\n"
                              << "Content-Type: text/html\r\n"
                              << "Content-Length: 60\r\n\r\n"
@@ -208,6 +190,7 @@ namespace http
             }
             else
             {
+                statusCode = 404;
                 response << "HTTP/1.1 404 Not Found\r\n"
                          << "Content-Type: text/html\r\n"
                          << "Content-Length: 60\r\n\r\n"
@@ -216,26 +199,35 @@ namespace http
         }
         else
         {
+            statusCode = 405;
             response << "HTTP/1.1 405 Method Not Allowed\r\n"
                      << "Content-Type: text/html\r\n"
                      << "Content-Length: 60\r\n\r\n"
                      << "<html><body><h1>405 Method Not Allowed</h1></body></html>";
         }
 
-        return response.str();
+        return {response.str(), statusCode};
     }
 
-    void TcpServer::sendResponse(const std::string &responseMessage)
+    void TcpServer::sendResponse(const std::string &responseMessage, int statusCode)
     {
         long bytesSent = write(m_new_socket, responseMessage.c_str(), responseMessage.size());
 
-        if (bytesSent == responseMessage.size())
+        if (statusCode == 200 && bytesSent == responseMessage.size())
         {
-            log("Servered Successfully", inet_ntoa(m_socketAddress.sin_addr));
+            log("Served Successfully", inet_ntoa(m_socketAddress.sin_addr));
+        }
+        else if (statusCode == 404)
+        {
+            log("File Not Found", inet_ntoa(m_socketAddress.sin_addr));
+        }
+        else if (statusCode == 405)
+        {
+            log("Method Not Allowed", inet_ntoa(m_socketAddress.sin_addr));
         }
         else
         {
             log("Error sending response to client", inet_ntoa(m_socketAddress.sin_addr));
         }
     }
-} //
+} // namespace http
