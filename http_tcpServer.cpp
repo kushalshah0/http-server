@@ -9,6 +9,51 @@
 #include <iomanip>
 #include <unordered_map>
 
+class User
+{
+private:
+    std::unordered_map<std::string, std::string> m_data;
+
+public:
+    User(const std::string &userId)
+    {
+        // Populate user data (mocked here)
+        m_data["userId"] = userId;
+        m_data["name"] = "John Doe";
+        m_data["email"] = "johndoe@example.com";
+        m_data["age"] = "30";
+        m_data["gender"] = "male";
+        m_data["address"] = "123 Main St, Anytown, USA";
+        m_data["phone"] = "123-456-7890";
+        m_data["occupation"] = "Software Engineer";
+        m_data["company"] = "Tech Corp";
+        m_data["hobbies"] = "[\"reading\", \"coding\", \"gaming\"]";
+        m_data["website"] = "https://example.com";
+    }
+
+    std::string serialize() const
+    {
+        std::ostringstream oss;
+        oss << "{";
+        for (auto it = m_data.begin(); it != m_data.end(); ++it)
+        {
+            if (it != m_data.begin())
+                oss << ",";
+            oss << "\"" << it->first << "\": \"" << it->second << "\"";
+        }
+        oss << "}";
+        return oss.str();
+    }
+
+    static User deserialize(const std::string &data)
+    {
+        // This is just a stub for deserialization; implement based on your input structure
+        size_t idPos = data.find("\"userId\":");
+        std::string userId = data.substr(idPos + 10, data.find("\"", idPos + 10) - (idPos + 10));
+        return User(userId);
+    }
+};
+
 namespace
 {
     const int BUFFER_SIZE = 30720;
@@ -198,6 +243,44 @@ namespace http
                              << "<html><body><h1>404 Not Found</h1></body></html>";
                 }
             }
+         if (method == "POST" && path == "user")
+        {
+            // Extract the payload
+           size_t payloadStart = req.find("\r\n\r\n") + 4;
+    std::string payload = req.substr(payloadStart);
+
+    // Parse the payload (key=value&key=value format)
+    std::unordered_map<std::string, std::string> formData;
+    std::stringstream payloadStream(payload);
+    std::string keyValuePair;
+    while (std::getline(payloadStream, keyValuePair, '&')) {
+        size_t equalsPos = keyValuePair.find('=');
+        if (equalsPos != std::string::npos) {
+            std::string key = keyValuePair.substr(0, equalsPos);
+            std::string value = keyValuePair.substr(equalsPos + 1);
+            formData[key] = value;
+        }
+    }
+
+    // Check if userId exists in the form data
+    if (formData.find("userId") != formData.end()) {
+        User user(formData["userId"]); // Create a User object using the userId
+
+        // Serialize User object to JSON
+        std::string userJson = user.serialize();
+
+        response << "HTTP/1.1 200 OK\r\n"
+                 << "Content-Type: application/json\r\n"
+                 << "Content-Length: " << userJson.size() << "\r\n\r\n"
+                 << userJson;
+    } else {
+        statusCode = 400;
+        response << "HTTP/1.1 400 Bad Request\r\n"
+                 << "Content-Type: text/html\r\n"
+                 << "Content-Length: 60\r\n\r\n"
+                 << "<html><body><h1>400 Bad Request</h1></body></html>";
+    }
+        }
             else
             {
                 statusCode = 405;
