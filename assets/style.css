@@ -76,3 +76,11 @@ img {
 .prev:hover, .next:hover, .fullscreen:hover {
     background-color: rgba(0, 0, 0, 0.5);
 }
+
+@media (max-width:  768px) {
+    .fullscreen {
+        padding: 0.4rem; 
+        font-size: 0.9rem;
+        left: 93%; 
+    }
+}
