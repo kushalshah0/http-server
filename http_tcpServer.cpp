@@ -135,7 +135,7 @@ namespace http
         std::string req(request);
         std::string method = req.substr(0, req.find(' '));
         std::string path = req.substr(req.find(' ') + 1, req.find(' ', req.find(' ') + 1) - req.find(' ') - 1);
-        
+
         if (!path.empty() && path[0] == '/')
         {
             path = path.substr(1);
@@ -215,15 +215,19 @@ namespace http
 
         if (statusCode == 200 && bytesSent == responseMessage.size())
         {
-            log("Served Successfully", inet_ntoa(m_socketAddress.sin_addr));
+            log("[200] Served Successfully", inet_ntoa(m_socketAddress.sin_addr));
         }
         else if (statusCode == 404)
         {
-            log("File Not Found", inet_ntoa(m_socketAddress.sin_addr));
+            log("[404] File Not Found", inet_ntoa(m_socketAddress.sin_addr));
         }
         else if (statusCode == 405)
         {
-            log("Method Not Allowed", inet_ntoa(m_socketAddress.sin_addr));
+            log("[405] Method Not Allowed", inet_ntoa(m_socketAddress.sin_addr));
+        }
+        else if (statusCode == 500)
+        {
+            log("[500] Internal Server Error", inet_ntoa(m_socketAddress.sin_addr));
         }
         else
         {
