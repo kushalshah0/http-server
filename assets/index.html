@@ -1,18 +1,63 @@
 <!DOCTYPE html>
-      <html lang="en">
-      <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link rel="icon" href="favicon.png" type="image/x-icon">
-          <title>HTTP Server</title>
-          <link href="https: fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="styles.css">
-      </head>
-      <body>
-          <div class="container">
-              <h1>HTTP Server Using C++</h1>
-              <h2>Hello !</h2>
-              <p>I am being served by the awesome HTTP server.</p>
-          </div>
-      </body>
-      </html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Server</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+</head>
+
+<body>
+
+    <div class="slider">
+        <div class="slides">
+            <div class="slide fade">
+                <img src="/assets/slides/0.jpeg" alt="Image 1">
+            </div>
+            <div class="slide fade">
+                <img src="/assets/slides/1.jpeg" alt="Image 2">
+            </div>
+            <div class="slide fade">
+                <img src="/assets/slides/2.jpeg" alt="Image 3">
+            </div>
+            <div class="slide fade">
+                <img src="/assets/slides/3.jpeg" alt="Image 4">
+            </div>
+            <div class="slide fade">
+                <img src="/assets/slides/4.jpeg" alt="Image 5">
+            </div>
+            <div class="slide fade">
+                <img src="/assets/slides/5.jpeg" alt="Image 6">
+            </div>
+            <div class="slide fade">
+                <img src="/assets/slides/6.jpeg" alt="Image 7">
+            </div>
+            <div class="slide fade">
+                <img src="/assets/slides/7.jpeg" alt="Image 8">
+            </div>
+            <div class="slide fade">
+                <img src="/assets/slides/8.jpeg" alt="Image 9">
+            </div>
+            <div class="slide fade">
+                <img src="/assets/slides/9.jpeg" alt="Image 10">
+            </div>
+            <div class="slide fade">
+                <img src="/assets/slides/10.jpeg" alt="Image 11">
+            </div>
+        </div>
+        <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+        <a class="next" onclick="changeSlide(1)">&#10095;</a>
+        <button class="fullscreen" onclick="toggleFullScreen()">
+            <svg width="24px" height="24px" viewBox="0 0 32 32" id="i-fullscreen" xmlns="http://www.w3.org/2000/svg"
+                fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M4 12 L4 4 12 4 M20 4 L28 4 28 12 M4 20 L4 28 12 28 M28 20 L28 28 20 28" />
+            </svg>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
