@@ -143,41 +143,51 @@ namespace http
 
         std::ostringstream response;
         int statusCode = 200; // Default to 200 OK
-
-        if (method == "GET")
+        try
         {
-            std::unordered_map<std::string, std::pair<std::string, std::string>> fileMap = {
-                {"", {"assets/index.html", "text/html"}},
-                {"index.html", {"assets/index.html", "text/html"}},
-                {"style.css", {"assets/style.css", "text/css"}},
-                {"script.js", {"assets/script.js", "application/javascript"}},
-                {"favicon.png", {"assets/favicon.png", "image/x-icon"}},
-                {"assets/slides/0.jpeg", {"assets/slides/0.jpeg", "image/jpeg"}},
-                {"assets/slides/1.jpeg", {"assets/slides/1.jpeg", "image/jpeg"}},
-                {"assets/slides/2.jpeg", {"assets/slides/2.jpeg", "image/jpeg"}},
-                {"assets/slides/3.jpeg", {"assets/slides/3.jpeg", "image/jpeg"}},
-                {"assets/slides/4.jpeg", {"assets/slides/4.jpeg", "image/jpeg"}},
-                {"assets/slides/5.jpeg", {"assets/slides/5.jpeg", "image/jpeg"}},
-                {"assets/slides/6.jpeg", {"assets/slides/6.jpeg", "image/jpeg"}},
-                {"assets/slides/7.jpeg", {"assets/slides/7.jpeg", "image/jpeg"}},
-                {"assets/slides/8.jpeg", {"assets/slides/8.jpeg", "image/jpeg"}},
-                {"assets/slides/9.jpeg", {"assets/slides/9.jpeg", "image/jpeg"}},
-                {"assets/slides/10.jpeg", {"assets/slides/10.jpeg", "image/jpeg"}}};
-
-            auto it = fileMap.find(path);
-            if (it != fileMap.end())
+            if (method == "GET")
             {
-                const std::string &filePath = it->second.first;
-                const std::string &contentType = it->second.second;
+                std::unordered_map<std::string, std::pair<std::string, std::string>> fileMap = {
+                    {"", {"assets/index.html", "text/html"}},
+                    {"index.html", {"assets/index.html", "text/html"}},
+                    {"style.css", {"assets/style.css", "text/css"}},
+                    {"script.js", {"assets/script.js", "application/javascript"}},
+                    {"favicon.png", {"assets/favicon.png", "image/x-icon"}},
+                    {"assets/slides/0.jpeg", {"assets/slides/0.jpeg", "image/jpeg"}},
+                    {"assets/slides/1.jpeg", {"assets/slides/1.jpeg", "image/jpeg"}},
+                    {"assets/slides/2.jpeg", {"assets/slides/2.jpeg", "image/jpeg"}},
+                    {"assets/slides/3.jpeg", {"assets/slides/3.jpeg", "image/jpeg"}},
+                    {"assets/slides/4.jpeg", {"assets/slides/4.jpeg", "image/jpeg"}},
+                    {"assets/slides/5.jpeg", {"assets/slides/5.jpeg", "image/jpeg"}},
+                    {"assets/slides/6.jpeg", {"assets/slides/6.jpeg", "image/jpeg"}},
+                    {"assets/slides/7.jpeg", {"assets/slides/7.jpeg", "image/jpeg"}},
+                    {"assets/slides/8.jpeg", {"assets/slides/8.jpeg", "image/jpeg"}},
+                    {"assets/slides/9.jpeg", {"assets/slides/9.jpeg", "image/jpeg"}},
+                    {"assets/slides/10.jpeg", {"assets/slides/10.jpeg", "image/jpeg"}}};
 
-                std::ifstream file(filePath);
-                if (file)
+                auto it = fileMap.find(path);
+                if (it != fileMap.end())
                 {
-                    std::string fileContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-                    response << "HTTP/1.1 200 OK\r\n"
-                             << "Content-Type: " << contentType << "\r\n"
-                             << "Content-Length: " << fileContent.size() << "\r\n\r\n"
-                             << fileContent;
+                    const std::string &filePath = it->second.first;
+                    const std::string &contentType = it->second.second;
+
+                    std::ifstream file(filePath);
+                    if (file)
+                    {
+                        std::string fileContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+                        response << "HTTP/1.1 200 OK\r\n"
+                                 << "Content-Type: " << contentType << "\r\n"
+                                 << "Content-Length: " << fileContent.size() << "\r\n\r\n"
+                                 << fileContent;
+                    }
+                    else
+                    {
+                        statusCode = 404;
+                        response << "HTTP/1.1 404 Not Found\r\n"
+                                 << "Content-Type: text/html\r\n"
+                                 << "Content-Length: 60\r\n\r\n"
+                                 << "<html><body><h1>404 Not Found</h1></body></html>";
+                    }
                 }
                 else
                 {
@@ -190,20 +200,19 @@ namespace http
             }
             else
             {
-                statusCode = 404;
-                response << "HTTP/1.1 404 Not Found\r\n"
+                statusCode = 405;
+                response << "HTTP/1.1 405 Method Not Allowed\r\n"
                          << "Content-Type: text/html\r\n"
                          << "Content-Length: 60\r\n\r\n"
-                         << "<html><body><h1>404 Not Found</h1></body></html>";
+                         << "<html><body><h1>405 Method Not Allowed</h1></body></html>";
             }
         }
-        else
+        catch (const std::exception &e)
         {
-            statusCode = 405;
-            response << "HTTP/1.1 405 Method Not Allowed\r\n"
+            response << "HTTP/1.1 500 Internal Server Error\r\n"
                      << "Content-Type: text/html\r\n"
                      << "Content-Length: 60\r\n\r\n"
-                     << "<html><body><h1>405 Method Not Allowed</h1></body></html>";
+                     << "<html><body><h1>500 Internal Server Error</h1></body></html>";
         }
 
         return {response.str(), statusCode};
