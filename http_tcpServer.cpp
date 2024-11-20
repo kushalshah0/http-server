@@ -6,14 +6,35 @@
 #include <fstream>
 #include <cstring> // For std::strlen
 #include <unordered_map>
+#include <ctime>
+#include <iomanip>
+#include <unordered_map>
 
 namespace
 {
     const int BUFFER_SIZE = 30720;
 
-    void log(const std::string &message)
+    std::string currentDateTime()
     {
-        std::cout << message << std::endl;
+        std::time_t now = std::time(0);
+        std::tm *tm_now = std::localtime(&now);
+
+        std::ostringstream oss;
+        oss << std::put_time(tm_now, "%Y-%m-%d %H:%M:%S"); // Format: YYYY-MM-DD HH:MM:SS
+        return oss.str();
+    }
+
+    void log(const std::string &message, const std::string &ip = "")
+    {
+        std::string timestamp = currentDateTime();
+        if (!ip.empty())
+        {
+            std::cout << "[" << timestamp << "] [IP: " << ip << "] " << message << std::endl;
+        }
+        else
+        {
+            std::cout << "[" << timestamp << "] " << message << std::endl;
+        }
     }
 
     void exitWithError(const std::string &errorMessage)
@@ -80,14 +101,14 @@ namespace http
         }
 
         std::ostringstream ss;
-        ss << "\n*** Server is running on ADDRESS: " << inet_ntoa(m_socketAddress.sin_addr) << " PORT: " << ntohs(m_socketAddress.sin_port) << " ***";
+        ss << "Server Started on ADDRESS:  " << inet_ntoa(m_socketAddress.sin_addr) << ":" << ntohs(m_socketAddress.sin_port);
         log(ss.str());
 
         int bytesReceived;
 
         while (true)
         {
-            log("\n\n====== Waiting for a new connection ======\n\n");
+            // log("\n\n====== Waiting for a new connection ======\n\n");
             acceptConnection(m_new_socket);
 
             char buffer[BUFFER_SIZE] = {0};
@@ -96,15 +117,15 @@ namespace http
             {
                 log("Failed to read bytes from client socket connection");
                 close(m_new_socket);
-                continue; // Continue to listen for new connections
+                continue;
             }
 
             std::ostringstream ss;
-            ss << "------ Received Request from client ------\n\n";
-            log(ss.str());
-            log(std::string(buffer, bytesReceived));
-
-            // Call buildResponse to handle the request and send the appropriate response
+            std::string request(buffer, bytesReceived);
+            size_t firstSpace = request.find(' ');
+            size_t secondSpace = request.find(' ', firstSpace + 1);
+            std::string methodAndPath = request.substr(0, secondSpace);
+            log(methodAndPath, inet_ntoa(m_socketAddress.sin_addr));
             std::string response = buildResponse(buffer);
             sendResponse(response);
 
@@ -120,6 +141,9 @@ namespace http
             std::ostringstream ss;
             ss << "Server failed to accept incoming connection from ADDRESS: " << inet_ntoa(m_socketAddress.sin_addr) << "; PORT: " << ntohs(m_socketAddress.sin_port);
             exitWithError(ss.str());
+
+            std::string client_ip = inet_ntoa(m_socketAddress.sin_addr);
+            log("Accepted connection from client", client_ip);
         }
     }
 
@@ -207,12 +231,11 @@ namespace http
 
         if (bytesSent == responseMessage.size())
         {
-            log("------ Server Response sent to client ------\n\n");
-            log(responseMessage);
+            log("Servered Successfully", inet_ntoa(m_socketAddress.sin_addr));
         }
         else
         {
-            log("Error sending response to client");
+            log("Error sending response to client", inet_ntoa(m_socketAddress.sin_addr));
         }
     }
 } //
