@@ -243,44 +243,49 @@ namespace http
                              << "<html><body><h1>404 Not Found</h1></body></html>";
                 }
             }
-         if (method == "POST" && path == "user")
-        {
-            // Extract the payload
-           size_t payloadStart = req.find("\r\n\r\n") + 4;
-    std::string payload = req.substr(payloadStart);
+            else if (method == "POST" && path == "user")
+            {
+                // Extract the payload
+                size_t payloadStart = req.find("\r\n\r\n") + 4;
+                std::string payload = req.substr(payloadStart);
 
-    // Parse the payload (key=value&key=value format)
-    std::unordered_map<std::string, std::string> formData;
-    std::stringstream payloadStream(payload);
-    std::string keyValuePair;
-    while (std::getline(payloadStream, keyValuePair, '&')) {
-        size_t equalsPos = keyValuePair.find('=');
-        if (equalsPos != std::string::npos) {
-            std::string key = keyValuePair.substr(0, equalsPos);
-            std::string value = keyValuePair.substr(equalsPos + 1);
-            formData[key] = value;
-        }
-    }
+                // Parse the payload (key=value&key=value format)
+                std::unordered_map<std::string, std::string> formData;
+                std::stringstream payloadStream(payload);
+                std::string keyValuePair;
+                while (std::getline(payloadStream, keyValuePair, '&'))
+                {
+                    size_t equalsPos = keyValuePair.find('=');
+                    if (equalsPos != std::string::npos)
+                    {
+                        std::string key = keyValuePair.substr(0, equalsPos);
+                        std::string value = keyValuePair.substr(equalsPos + 1);
+                        formData[key] = value;
+                    }
+                }
 
-    // Check if userId exists in the form data
-    if (formData.find("userId") != formData.end()) {
-        User user(formData["userId"]); // Create a User object using the userId
+                // Check if userId exists in the form data
+                if (formData.find("userId") != formData.end())
+                {
+                    User user(formData["userId"]); // Create a User object using the userId
 
-        // Serialize User object to JSON
-        std::string userJson = user.serialize();
+                    // Serialize User object to JSON
+                    std::string userJson = user.serialize();
 
-        response << "HTTP/1.1 200 OK\r\n"
-                 << "Content-Type: application/json\r\n"
-                 << "Content-Length: " << userJson.size() << "\r\n\r\n"
-                 << userJson;
-    } else {
-        statusCode = 400;
-        response << "HTTP/1.1 400 Bad Request\r\n"
-                 << "Content-Type: text/html\r\n"
-                 << "Content-Length: 60\r\n\r\n"
-                 << "<html><body><h1>400 Bad Request</h1></body></html>";
-    }
-        }
+                    response << "HTTP/1.1 200 OK\r\n"
+                             << "Content-Type: application/json\r\n"
+                             << "Content-Length: " << userJson.size() << "\r\n\r\n"
+                             << userJson;
+                }
+                else
+                {
+                    statusCode = 400;
+                    response << "HTTP/1.1 400 Bad Request\r\n"
+                             << "Content-Type: text/html\r\n"
+                             << "Content-Length: 60\r\n\r\n"
+                             << "<html><body><h1>400 Bad Request</h1></body></html>";
+                }
+            }
             else
             {
                 statusCode = 405;
