@@ -208,7 +208,12 @@ namespace http
                     {"assets/slides/7.jpeg", {"assets/slides/7.jpeg", "image/jpeg"}},
                     {"assets/slides/8.jpeg", {"assets/slides/8.jpeg", "image/jpeg"}},
                     {"assets/slides/9.jpeg", {"assets/slides/9.jpeg", "image/jpeg"}},
-                    {"assets/slides/10.jpeg", {"assets/slides/10.jpeg", "image/jpeg"}}};
+                    {"assets/slides/10.jpeg", {"assets/slides/10.jpeg", "image/jpeg"}},
+                    {"assets/slides/11.jpeg", {"assets/slides/11.jpeg", "image/jpeg"}},
+                    {"assets/slides/12.jpeg", {"assets/slides/12.jpeg", "image/jpeg"}},
+                    {"assets/slides/13.jpeg", {"assets/slides/13.jpeg", "image/jpeg"}},
+                    {"assets/slides/14.jpeg", {"assets/slides/14.jpeg", "image/jpeg"}},
+                    {"assets/slides/15.jpeg", {"assets/slides/15.jpeg", "image/jpeg"}}};
 
                 auto it = fileMap.find(path);
                 if (it != fileMap.end())
