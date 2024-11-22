@@ -26,6 +26,9 @@ body {
 .slide {
     min-width: 100%;
     height: 100%;
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
 }
 
 img {
@@ -79,8 +82,60 @@ img {
 
 @media (max-width:  768px) {
     .fullscreen {
-        padding: 0.4rem; 
+        padding: 0.4rem;
         font-size: 0.9rem;
-        left: 93%; 
+        left: 93%;
     }
+    .user-form {
+            padding: 15px; /* Adjust padding for smaller screens */
+            margin: 10px; /* Reduce margin */
+        }
+    .user-form label {
+            font-size: 1em; /* Smaller font size for labels */
+        }
+    .user-form input[type="text"], .user-form button {
+            font-size: 0.9em; /* Smaller font size for inputs and buttons */
+        }
+    }
+    
+.user-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the form elements */
+    background-color: rgba(255, 255, 255, 0.8); /* Light background for contrast */
+    padding: 20px; /* Add some padding */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    margin: 20px; /* Margin around the form */
+    max-width: 400px; /* Maximum width for larger screens */
+    width: 90%; /* Full width on smaller screens */
+}
+
+.user-form label {
+    font-size: 1.2em; /* Larger font for the label */
+    margin-bottom: 10px; /* Space between label and input */
+}
+
+.user-form input[type="text"] {
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding inside the input */
+    margin-bottom: 15px; /* Space below the input */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 1em; /* Font size */
+}
+
+.user-form button {
+    padding: 10px 20px; /* Padding for the button */
+    background-color: #007BFF; /* Bootstrap primary color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 1em; /* Font size */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.user-form button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
 }
